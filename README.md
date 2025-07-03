@@ -36,7 +36,7 @@
 
     docker build -f with.env.Dockerfile -t <dockerhub>/<自己取>:<版本> .
 
-ex: docekr build -f with.env.Dockerfile -t kong567/api:0.0.1 .
+ex: docker build -f with.env.Dockerfile -t kong567/api:0.0.1 .
 
 #### push docker image
 
