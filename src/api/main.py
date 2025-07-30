@@ -73,7 +73,7 @@ def get_ETF_historyprice(
 
 
 
-@app.get("/ETF_PremiumDiscoun")
+@app.get("/ETF_PremiumDiscount")
 def get_ETF_PremiumDiscoun(
     Stock_id: str = "",  # 股票代號（可透過 URL query string 傳入）
     start_date: str = "",  # 查詢起始日期（格式：YYYY-MM-DD）
@@ -81,7 +81,7 @@ def get_ETF_PremiumDiscoun(
 ):
     # 根據參數組成 SQL 查詢語句
     sql = f"""
-    select * from ETF_PremiumDiscoun
+    select * from ETF_PremiumDiscount
     where Stock_id = '{Stock_id}'
     and Date>= '{start_date}'
     and Date<= '{end_date}'
