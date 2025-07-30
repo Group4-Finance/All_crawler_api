@@ -10,7 +10,7 @@ from api.config import MYSQL_ACCOUNT, MYSQL_HOST, MYSQL_PASSWORD, MYSQL_PORT
 # 建立連接到 MySQL 資料庫的函式，回傳一個 SQLAlchemy 的連線物件
 def get_mysql_data_conn() -> engine.base.Connection:
     # 組成資料庫連線字串，使用 pymysql 作為 driver
-    address = f"mysql+pymysql://{MYSQL_ACCOUNT}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/All_crawler_data"
+    address = f"mysql+pymysql://{MYSQL_ACCOUNT}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/crawlerDB"
     engine = create_engine(address)  # 建立 SQLAlchemy 引擎
     connect = engine.connect()  # 建立實際連線
     return connect  # 回傳連線物件
