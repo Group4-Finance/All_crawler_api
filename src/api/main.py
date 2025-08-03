@@ -2,6 +2,7 @@
 import pandas as pd  # 用來處理資料表
 from fastapi import FastAPI  # 建立 API 用
 from sqlalchemy import create_engine, engine  # 用來建立資料庫連線
+from fastapi.middleware.cors import CORSMiddleware
 
 # 匯入自定義的資料庫連線設定
 from api.config import MYSQL_ACCOUNT, MYSQL_HOST, MYSQL_PASSWORD, MYSQL_PORT
@@ -18,6 +19,21 @@ def get_mysql_data_conn() -> engine.base.Connection:
 
 # 建立 FastAPI 應用實例
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",  # React 開發預設網址
+    "http://127.0.0.1:3000",
+    "http://35.206.205.183:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 # 定義根目錄路由（測試用）
@@ -55,20 +71,22 @@ def get_ETF_historyprice(
     start_date: str = "",  # 查詢起始日期（格式：YYYY-MM-DD）
     end_date: str = "",  # 查詢結束日期（格式：YYYY-MM-DD）
 ):
-    # 根據參數組成 SQL 查詢語句
-    sql = f"""
-    select * from ETF_historyprice
-    where Stock_id = '{Stock_id}'
-    and Date>= '{start_date}'
-    and Date<= '{end_date}'
-    """
-    # 建立資料庫連線
-    mysql_conn = get_mysql_data_conn()
-    # 使用 Pandas 執行 SQL 查詢並取得資料
-    data_df = pd.read_sql(sql, con=mysql_conn)
-    # 將資料轉為 List of Dict 格式，方便 FastAPI 回傳 JSON
-    data_dict = data_df.to_dict("records")
-    return {"data": data_dict}  # 回傳資料結果
+    try: # 根據參數組成 SQL 查詢語句
+        sql = f"""
+        select * from ETF_historyprice
+        where Stock_id = '{Stock_id}'
+        and Date>= '{start_date}'
+        and Date<= '{end_date}'
+        """
+        # 建立資料庫連線
+        mysql_conn = get_mysql_data_conn()
+        # 使用 Pandas 執行 SQL 查詢並取得資料
+        data_df = pd.read_sql(sql, con=mysql_conn)
+        # 將資料轉為 List of Dict 格式，方便 FastAPI 回傳 JSON
+        data_dict = data_df.to_dict("records")
+        return {"data": data_dict}  # 回傳資料結果
+    except Exception as e:
+        return {"error": str(e)}
 
 
 
